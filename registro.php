@@ -1,26 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="registro.css">
-    <title>Document</title>
-</head>
-<body>
-    <div class="container">
-        <div id="register">
-            <h2>Registrarse</h2>
-            <form>
-            <input type="text" placeholder="Usuario" id="registrar-Usuario" required><br>
-            <input type="password" placeholder="Contraseña" id="registrar-Contrasena" required><br>
-            <input type="password" placeholder="Confirmar Contraseña" id="confirmar-Contrasena" required><br>
-            <button type="submit">Registrarse</button>
-            </form>
-            <div class="links">
-            <a href="index.html">Ya tengo cuenta</a>
-            </div>
-        </div>
-        </div>
-    </div>
-</body>
-</html>
+<?php
+include("./php/connection.php");
+
+if($_SERVER['REQUEST_METHOD'] == 'POST'){
+    $usuario = $_POST['usuario'];
+    $contrasena = $_POST['contrasena'];
+
+    try {
+        // Aquí valido si los campos están vacíos
+        if(empty($usuario) || empty($contrasena)){
+            throw new Exception("Por favor, llena todos los campos");
+        }
+
+        // Aquí valido si el usuario ya existe en la base de datos
+        $stmt = $conn -> prepare("SELECT * FROM usuarios WHERE nombre = ?");
+        if (!$stmt) {
+            throw new Exception("Error en la consulta: " . $conn->error);
+        }
+        $stmt -> bind_param('s', $usuario);
+        $stmt -> execute();
+        $stmt -> store_result();
+        if($stmt -> num_rows > 0){
+            throw new Exception("El usuario ya existe");
+        }
+        $stmt -> close();
+
+        // Se prepara la consulta para insertar el registro en la base de datos
+        $stmt = $conn -> prepare("INSERT INTO usuarios (nombre, contrasena, fecha_registro) VALUES (?, ?, NOW())");
+        if (!$stmt) {
+            throw new Exception("Error en la consulta: " . $conn->error);
+        }
+
+        //Se 
+        $hashed_password = password_hash($contrasena, PASSWORD_DEFAULT);
+
+        $stmt -> bind_param('ss', $usuario, $hashed_password);
+        $stmt -> execute();
+        if ($stmt->affected_rows <= 0) {
+           throw new Exception("Error al registrar el usuario");
+        }
+        echo "Usuario registrado correctamente";
+        $stmt -> close();
+
+    } catch (Exception $e) {
+        echo $e->getMessage();
+        exit(); 
+    }
+}
+?>
