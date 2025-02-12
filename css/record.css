@@ -1,0 +1,53 @@
+@font-face {
+    font-family: 'Pixel';
+    src: url('../emulogic-font/Emulogic-zrEw.ttf');
+}
+
+body {
+    background-color: #111;
+    color: #0f0;
+    font-family: 'Pixel', sans-serif;
+    text-align: center;
+    padding-top: 50px;
+}
+
+table {
+    margin: auto;
+    border-collapse: collapse;
+    width: 50%;
+    background: #222;
+    border: 4px solid #0f0;
+    box-shadow: 0 0 10px #0f0;
+}
+
+th, td {
+    border: 2px solid #0f0;
+    padding: 10px;
+    font-size: 16px;
+}
+
+th {
+    background: #0f0;
+    color: #000;
+}
+
+td {
+    color: #fff;
+}
+
+button {
+    font-family: 'Pixel', sans-serif;
+    background: #000;
+    border: 3px solid #0ff;
+    color: #0ff;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+button:hover {
+    background: #0ff;
+    color: #000;
+    text-shadow: 2px 2px 0px #fff;
+}
