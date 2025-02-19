@@ -21,22 +21,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-//Función para mostrar el modal
-function mostrarModal(mensaje) {
-  document.getElementById("modal-text").innerText = mensaje;
-  document.getElementById("custom-modal").style.display = "block";
-
-  // Cerrar automáticamente después de 3 segundos
-  setTimeout(() => {
-    document.getElementById("custom-modal").style.display = "none";
-  }, 3000);
-}
-
-// Cerrar manualmente con el botón
-document.getElementById("close-modal").addEventListener("click", function () {
-  document.getElementById("custom-modal").style.display = "none";
-});
-
 //Función para registro de usuario
 $(document).ready(function () {
   $("#register-form").on("submit", function (e) {
@@ -47,7 +31,7 @@ $(document).ready(function () {
     let confirmarContrasena = $("#confirmar-Contrasena").val();
 
     if (contrasena !== confirmarContrasena) {
-      mostrarModal("Las contraseñas no coinciden");
+      alert("Las contraseñas no coinciden");
       return;
     }
 
@@ -61,16 +45,16 @@ $(document).ready(function () {
       },
       success: function (response) {
         if (response.success) {
-          mostrarModal(response.message);
+          alert(response.message);
           $("#register-form")[0].reset();
           $("#register").hide();
           $("#login").show();
         } else {
-          mostrarModal(response.message); // Mostrar el error en el modal
+          alert(response.message); // Mostrar el error en el modal
         }
       },
       error: function () {
-        mostrarModal("Ocurrió un error inesperado. Inténtalo nuevamente.");
+        alert("Ocurrió un error inesperado. Inténtalo nuevamente.");
       },
     });
   });
@@ -85,6 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const tecladoDiv = document.querySelector(".teclado");
   const letras = "QWERTYUIOPASDFGHJKLÑZXCVBNM".split("");
 
+  console.log(iniciarButton);
   if (divBotones && divJuego) {
     iniciarButton.addEventListener("click", function (event) {
       event.preventDefault();
