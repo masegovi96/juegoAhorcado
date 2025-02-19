@@ -1,56 +1,117 @@
 //Esta función es la encargada de ocultar o mostrar el formulario que vayamos requiriendo, ya sea el de login o el de registro.
-document.addEventListener('DOMContentLoaded', function() {
-    const loginDiv = document.querySelector('#login');
-    const registerDiv = document.querySelector('#register');
-    const toRegisterLink = document.querySelector('#to-register');
-    const toLoginLink = document.querySelector('#to-login');
+document.addEventListener("DOMContentLoaded", function () {
+  const loginDiv = document.querySelector("#login");
+  const registerDiv = document.querySelector("#register");
+  const toRegisterLink = document.querySelector("#to-register");
+  const toLoginLink = document.querySelector("#to-login");
 
-    //Una condición para ver si existen los div o los elementos que vamos a utilizar.
-    if(toRegisterLink && toLoginLink){
-        toRegisterLink.addEventListener("click", function(event){
-            event.preventDefault();
-            loginDiv.style.display = 'none';
-            registerDiv.style.display = 'block';
-        });
-
-        toLoginLink.addEventListener("click", function(event){
-            event.preventDefault();
-            loginDiv.style.display = 'block';
-            registerDiv.style.display = 'none';
-        });
-    }
-});
-
-//Función AJAX para el registro del usuario.
-$(document).ready(function(){
-    $('#register-form').on('submit', function(e){
-        e.preventDefault();
-
-        let usuario = $('#registrar-Usuario').val();
-        let contrasena = $('#registrar-Contrasena').val();
-        var confirmarContrasena = $('#confirmar-Contrasena').val();
-
-        if(contrasena != confirmarContrasena){
-            alert('Las contraseñas no coinciden');
-            return;
-        }
-
-        $.ajax({
-            url: 'registro.php',
-            type: 'POST',
-            data: {
-                usuario: usuario,
-                contrasena: contrasena
-            },
-            success: function(response){
-                alert(response);
-                $('#register').hide();
-                $('#login').show();
-            },
-            error: function(response){
-                alert("Error al registrar el usuario");
-            }
-        });
+  //Una condición para ver si existen los div o los elementos que vamos a utilizar.
+  if (toRegisterLink && toLoginLink) {
+    toRegisterLink.addEventListener("click", function (event) {
+      event.preventDefault();
+      loginDiv.style.display = "none";
+      registerDiv.style.display = "block";
     });
+
+    toLoginLink.addEventListener("click", function (event) {
+      event.preventDefault();
+      loginDiv.style.display = "block";
+      registerDiv.style.display = "none";
+    });
+  }
 });
 
+//Función para mostrar el modal
+function mostrarModal(mensaje) {
+  document.getElementById("modal-text").innerText = mensaje;
+  document.getElementById("custom-modal").style.display = "block";
+
+  // Cerrar automáticamente después de 3 segundos
+  setTimeout(() => {
+    document.getElementById("custom-modal").style.display = "none";
+  }, 3000);
+}
+
+// Cerrar manualmente con el botón
+document.getElementById("close-modal").addEventListener("click", function () {
+  document.getElementById("custom-modal").style.display = "none";
+});
+
+//Función para registro de usuario
+$(document).ready(function () {
+  $("#register-form").on("submit", function (e) {
+    e.preventDefault();
+
+    let usuario = $("#registrar-Usuario").val();
+    let contrasena = $("#registrar-Contrasena").val();
+    let confirmarContrasena = $("#confirmar-Contrasena").val();
+
+    if (contrasena !== confirmarContrasena) {
+      mostrarModal("Las contraseñas no coinciden");
+      return;
+    }
+
+    $.ajax({
+      url: "registro.php",
+      type: "POST",
+      dataType: "json", // Importante para que interprete la respuesta como JSON
+      data: {
+        usuario: usuario,
+        contrasena: contrasena,
+      },
+      success: function (response) {
+        if (response.success) {
+          mostrarModal(response.message);
+          $("#register-form")[0].reset();
+          $("#register").hide();
+          $("#login").show();
+        } else {
+          mostrarModal(response.message); // Mostrar el error en el modal
+        }
+      },
+      error: function () {
+        mostrarModal("Ocurrió un error inesperado. Inténtalo nuevamente.");
+      },
+    });
+  });
+});
+
+
+//Función para ocultar los contenedores para iniciar juego
+document.addEventListener("DOMContentLoaded", function () {
+  const divBotones = document.querySelector("#botones");
+  const divJuego = document.querySelector("#juego");
+  const iniciarButton = document.querySelector("#iniciar-juego");
+  const tecladoDiv = document.querySelector(".teclado");
+  const letras = "QWERTYUIOPASDFGHJKLÑZXCVBNM".split("");
+
+  if (divBotones && divJuego) {
+    iniciarButton.addEventListener("click", function (event) {
+      event.preventDefault();
+      divBotones.style.display = "none";
+      divJuego.style.display = "block";
+      document.body.style.backgroundImage = "none";
+      iniciarJuego();
+    });
+  }
+
+  //Función principal para iniciar el juego
+  function iniciarJuego() {
+    generarTeclado();
+  } 
+  
+  //Función para generar el teclado
+  function generarTeclado() {
+    letras.forEach((letra) => {
+      const button = document.createElement("button");
+      button.innerHTML = letra;
+      button.classList.add("tecla");
+
+      button.addEventListener("click", () => {
+        button.style.backgroundColor = "gray";
+        button.disabled = true;
+      });
+      tecladoDiv.appendChild(button);
+    });
+  }
+});
