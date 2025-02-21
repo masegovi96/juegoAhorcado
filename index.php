@@ -6,6 +6,9 @@
   <link rel="stylesheet" href="./css/style.css">
   <title>Ahorcado</title>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
   <div class="container">
@@ -15,8 +18,8 @@
     
     <!-- Formulario de Inicio de Sesion -->
     <div class="form-container" id="login">
-      <h2>Iniciar Sesion</h2>
-      <form>
+      <h2>Iniciar Sesión</h2>
+      <form id="login-form">
         <div class="form-group">
           <input type="text" placeholder="Usuario" id="Usuario" required>
         </div>
@@ -31,6 +34,8 @@
         <a href="#" id="to-register">Crear Cuenta</a>
       </div>
     </div>
+
+    
 
     <!-- Formulario de Registro -->
     <div class="form-container" id="register" style="display: none;">
@@ -55,15 +60,27 @@
     </div>
   </div>
 
-  <!-- Modal -->
-  <div id="custom-modal" class="modal">
-    <div class="modal-content">
-      <p id="modal-text"></p>
-      <button id="close-modal">Aceptar</button>
+
+
+  <!-- Modal de Confirmación -->
+  <div class="modal fade" id="mensajeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Mensaje</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p id="mensajeTexto"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+        </div>
+      </div>
     </div>
   </div>
 
-<!-- Enlace al archivo JavaScript -->
-<script src="./js/script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./js/script.js"></script>
 </body>
 </html>
