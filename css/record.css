@@ -1,7 +1,8 @@
 @font-face {
     font-family: 'Pixel';
-    src: url('../emulogic-font/Emulogic-zrEw.ttf');
+    src: url('../softizen/Softizen.ttf');
 }
+
 
 body {
     background-color: #111;

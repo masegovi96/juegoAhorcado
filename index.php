@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -11,7 +12,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-  <div class="container">
+  <div class="contenedor">
     <div class="header">
       <h1>Bienvenido al Ahorcado</h1>
     </div>
@@ -21,13 +22,13 @@
       <h2>Iniciar Sesión</h2>
       <form id="login-form">
         <div class="form-group">
-          <input type="text" placeholder="Usuario" id="Usuario" required>
+          <input type="text" placeholder="Usuario" id="Usuario" class="Usuario" required>
         </div>
         <div class="form-group">
-          <input type="password" placeholder="Contraseña" id="Contrasena" required>
+          <input type="password" placeholder="Contraseña" id="Contrasena" class="Contrasena" required>
         </div>
         <div class="form-group">
-          <button type="submit">Entrar</button>
+          <button type="submit" class="boton">Entrar</button>
         </div>
       </form>
       <div class="links">
@@ -51,7 +52,7 @@
           <input type="password" placeholder="Confirmar Contraseña" id="confirmar-Contrasena" required>
         </div>
         <div class="form-group">
-          <button type="submit">Registrarse</button>
+          <button class="boton" type="submit">Registrarse</button>
         </div>
       </form>
       <div class="links">
