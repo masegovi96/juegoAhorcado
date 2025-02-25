@@ -1,11 +1,12 @@
-//Función que se ejecuta cuando el documento está listo
+// Función que se ejecuta cuando el documento está completamente cargado
 document.addEventListener("DOMContentLoaded", function () {
+  // Obtener elementos del DOM para login y registro
   const loginDiv = document.querySelector("#login");
   const registerDiv = document.querySelector("#register");
   const toRegisterLink = document.querySelector("#to-register");
   const toLoginLink = document.querySelector("#to-login");
 
-  // Alternar entre formularios de login y registro
+  // Alternar entre los formularios de login y registro
   if (toRegisterLink && toLoginLink) {
     toRegisterLink.addEventListener("click", function (event) {
       event.preventDefault();
@@ -27,11 +28,12 @@ document.addEventListener("DOMContentLoaded", function () {
       .on("submit", function (e) {
         e.preventDefault();
 
+        // Obtener valores de los campos
         let usuario = $("#registrar-Usuario").val().trim();
         let contrasena = $("#registrar-Contrasena").val().trim();
         let confirmarContrasena = $("#confirmar-Contrasena").val().trim();
 
-        // Validaciones
+        // Validaciones antes de enviar el formulario
         if (usuario === "" || contrasena === "" || confirmarContrasena === "") {
           mostrarModal("Por favor, llena todos los campos.");
           return;
@@ -47,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         }
 
-        // Enviar datos al servidor
+        // Enviar datos al servidor mediante AJAX
         $.ajax({
           url: "registro.php",
           type: "POST",
@@ -58,8 +60,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (response.success) {
               $("#register-form")[0].reset(); // Limpiar formulario
-              $("#register").hide(); // Ocultar registro
-              $("#login").show(); // Mostrar login
+              $("#register").hide(); // Ocultar formulario de registro
+              $("#login").show(); // Mostrar formulario de login
             }
           },
           error: function () {
@@ -74,16 +76,17 @@ document.addEventListener("DOMContentLoaded", function () {
       .on("submit", function (e) {
         e.preventDefault();
 
+        // Obtener valores de los campos
         let usuario = $("#Usuario").val().trim();
         let contrasena = $("#Contrasena").val().trim();
 
-        // Validaciones
+        // Validaciones antes de enviar el formulario
         if (usuario === "" || contrasena === "") {
           mostrarModal("Por favor, ingresa tu usuario y contraseña.");
           return;
         }
 
-        // Enviar datos al servidor
+        // Enviar datos al servidor mediante AJAX
         $.ajax({
           url: "login.php",
           type: "POST",
@@ -101,6 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       });
 
+    // Función para mostrar un modal con un mensaje
     function mostrarModal(mensaje) {
       $("#mensajeTexto").text(mensaje);
       var modal = new bootstrap.Modal(document.getElementById("mensajeModal"));
@@ -108,62 +112,63 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Inicio del juego
+  // Función para cerrar sesión
+  const logoutButton = document.querySelector(".logout");
+  if (logoutButton) {
+    logoutButton.addEventListener("click", function () {
+      window.location.href = "logout.php"; // Redirige al cerrar sesión
+    });
+  }
+
+  // Elementos del juego
   const divBotones = document.querySelector("#botones");
   const divJuego = document.querySelector("#juego");
   const iniciarButton = document.querySelector("#iniciar-juego");
   const tecladoDiv = document.querySelector(".teclado");
   const palabraContainer = document.querySelector(".palabra-container");
+  const intentosElemento = document.querySelector("#intentos-restantes");
 
+  // Evento para iniciar el juego
   if (divBotones && divJuego && iniciarButton) {
     iniciarButton.addEventListener("click", function (event) {
       event.preventDefault();
-      divBotones.style.display = "none";
-      divJuego.style.display = "block";
+      divBotones.style.display = "none"; // Ocultar botones
+      divJuego.style.display = "block"; // Mostrar el área de juego
       document.body.style.backgroundImage = "none";
-      iniciarPartida(); // Llamar a la función correcta
+      iniciarPartida(); // Llamar a la función que inicia la partida
     });
   }
 
+  // Función para obtener la palabra aleatoria y empezar el juego
   function iniciarPartida() {
-    fetch("palabra_aleatoria.php") // Asegurarse de que se llama al archivo correcto
+    fetch("palabra_aleatoria.php") // Obtener palabra desde el servidor
       .then((response) => response.json())
       .then((data) => {
-        console.log("Respuesta del servidor:", data); // DEPURACIÓN
+        console.log("Respuesta del servidor:", data); // Debug en consola
 
         if (data.success) {
           // Guardar el ID de la partida en sessionStorage
           sessionStorage.setItem("partida_id", data.partida_id);
 
-          // Mostrar intentos restantes y asegurarse de que sea visible
-          const intentosElemento = document.querySelector(
-            "#intentos-restantes"
-          );
+          // Mostrar intentos restantes
           if (intentosElemento) {
             intentosElemento.textContent = `Intentos restantes: ${data.intentos_restantes}`;
             intentosElemento.style.display = "block";
-          } else {
-            console.error(
-              "Elemento #intentos-restantes no encontrado en el DOM"
-            );
           }
 
-          // Pintar la palabra oculta
+          // Pintar la palabra oculta en pantalla
           if (data.palabra) {
             pintarPalabra(data.palabra);
-          } else {
-            console.error("No se recibió la palabra correctamente.");
           }
 
           // Generar el teclado virtual
           generarTeclado();
-        } else {
-          console.error("Error al crear la partida:", data.error);
         }
       })
       .catch((error) => console.error("Error en la solicitud AJAX:", error));
   }
 
+  // Función para generar el teclado virtual
   function generarTeclado() {
     tecladoDiv.innerHTML = ""; // Limpiar teclado antes de generarlo
     const letras = "QWERTYUIOPASDFGHJKLÑZXCVBNM".split("");
@@ -185,6 +190,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // Función para mostrar la palabra con guiones
   function pintarPalabra(palabra) {
     palabraContainer.innerHTML = "";
     palabra.split("").forEach(() => {
@@ -194,113 +200,51 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // Función para verificar si la letra es correcta
   function verificarLetra(letra) {
     const partida_id = sessionStorage.getItem("partida_id");
 
     fetch("verificar_letra.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `partida_id=${partida_id}&letra=${letra}`,
+      body: `partida_id=${partida_id}&letra=${letra}`
     })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          document.querySelector(
-            "#intentos-restantes"
-          ).textContent = `Intentos restantes: ${data.intentos_restantes}`;
+      .then(response => response.json())
+      .then(data => {
+        console.log("Respuesta del servidor:", data); // Debug en consola
 
+        if (data.success) {
+          // Actualizar intentos restantes
+          intentosElemento.textContent = `Intentos restantes: ${data.intentos_restantes}`;
+
+          // Actualizar la palabra con las letras acertadas
+          actualizarPalabra(data.palabra_mostrada);
+
+          // Si perdió
           if (data.estado === "perdido") {
-            dibujarAhorcado(0); // Dibuja el último paso
-            setTimeout(() => alert("¡Perdiste!"), 500);
-          } else if (data.estado === "ganado") {
-            alert("¡Ganaste! Felicidades.");
-          } else {
-            dibujarAhorcado(data.intentos_restantes); // Actualizar dibujo
+            setTimeout(() => {
+              alert(`¡Perdiste! La palabra era: ${data.palabra_completa}`);
+              divJuego.style.display = "none";
+              intentosElemento.style.display = "none";
+              divBotones.style.display = "block";
+            }, 500);
+          }
+          // Si ganó
+          else if (data.estado === "ganado") {
+            setTimeout(() => {
+              alert("¡Ganaste! Felicidades.");
+              divJuego.style.display = "none";
+              intentosElemento.style.display = "none";
+              divBotones.style.display = "block";
+            }, 500);
           }
         }
-      });
+      })
+      .catch(error => console.error("Error en la solicitud AJAX:", error));
   }
-  // Dibujar el ahorcado según los intentos fallidos
-  const canvas = document.querySelector(".stick");
-  const ctx = canvas.getContext("2d");
 
-  // Array para almacenar qué partes del ahorcado ya se han dibujado
-  let partesDibujadas = [];
-
-  function dibujarAhorcado(intentosRestantes) {
-    ctx.lineWidth = 5;
-    ctx.strokeStyle = "black";
-
-    // Limpiar solo cuando se inicia el primer dibujo
-    if (intentosRestantes === 5) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      partesDibujadas = []; // Resetear partes dibujadas
-    }
-
-    // Definir las partes del ahorcado
-    const partes = [
-      () => {
-        // Base
-        ctx.beginPath();
-        ctx.moveTo(20, 180);
-        ctx.lineTo(80, 180);
-        ctx.stroke();
-        // Poste
-        ctx.beginPath();
-        ctx.moveTo(50, 180);
-        ctx.lineTo(50, 20);
-        ctx.stroke();
-
-      },
-      () => {
-        // Barra superior y cuerda
-        ctx.beginPath();
-        ctx.moveTo(50, 20);
-        ctx.lineTo(120, 20);
-        ctx.moveTo(120, 20);
-        ctx.lineTo(120, 40);
-        ctx.stroke();
-      },
-      () => {
-        // Cabeza
-        ctx.beginPath();
-        ctx.arc(120, 50, 10, 0, Math.PI * 2);
-        ctx.stroke();
-      },
-      () => {
-        // Cuerpo
-        ctx.beginPath();
-        ctx.moveTo(120, 60);
-        ctx.lineTo(120, 100);
-        ctx.stroke();
-      },
-      () => {
-        // Brazos
-        ctx.beginPath();
-        ctx.moveTo(120, 70);
-        ctx.lineTo(110, 90);
-        ctx.moveTo(120, 70);
-        ctx.lineTo(130, 90);
-        ctx.stroke();
-      },
-      () => {
-        // Piernas (Juego terminado)
-        ctx.beginPath();
-        ctx.moveTo(120, 100);
-        ctx.lineTo(110, 130);
-        ctx.moveTo(120, 100);
-        ctx.lineTo(130, 130);
-        ctx.stroke();
-        setTimeout(() => alert("¡Perdiste!"), 500);
-      },
-    ];
-
-    // Dibujar cada parte hasta alcanzar los intentos fallidos
-    for (let i = 0; i < 6 - intentosRestantes; i++) {
-      if (!partesDibujadas.includes(i)) {
-        partes[i]();
-        partesDibujadas.push(i);
-      }
-    }
+  // Función para actualizar la palabra en pantalla
+  function actualizarPalabra(palabra) {
+    palabraContainer.innerHTML = palabra.split(" ").map(letra => `<span>${letra}</span>`).join(" ");
   }
 });

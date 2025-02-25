@@ -25,6 +25,9 @@ if (!isset($_SESSION['usuario_id'])) {
         <div class="record">
             <button class="score">Ver Record</button>
         </div>
+        <div class="close">
+            <button class="logout">Cerrar Sesión</button>
+        </div>
     </div>
     <div id="intentos-restantes" style="display: none;">Intentos restantes: 6</div>
     <div class="juego" id="juego" style="display: none;">
