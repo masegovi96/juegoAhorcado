@@ -26,10 +26,9 @@ if (!isset($_SESSION['usuario_id'])) {
             <button class="score">Ver Record</button>
         </div>
     </div>
+    <div id="intentos-restantes" style="display: none;">Intentos restantes: 6</div>
     <div class="juego" id="juego" style="display: none;">
-        <div class="body-stick">
-            <canvas class="stick" style="display: none;"></canvas>
-        </div>
+            <canvas class="stick" width="200" height="200"></canvas>
         <div class="palabra-container">
 
         </div>
